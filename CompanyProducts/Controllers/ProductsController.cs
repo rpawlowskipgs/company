@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CompanyProducts.Models;
+using CompanyProducts.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompanyProducts.Controllers
@@ -9,55 +10,41 @@ namespace CompanyProducts.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
-        private static List<Product> _products = new List<Product>
+        private IProductRepository _productRepository;
+
+        public ProductsController(IProductRepository productRepository)
         {
-            new Product() { Id = 1, Name = "Super", Price = 100 },
-            new Product() { Id = 2, Name = "Fancy", Price = 90 },
-            new Product() { Id = 3, Name = "Clancy", Price = 50 },
-        };
+            this._productRepository = productRepository;
+        }
 
         [HttpGet]
         public IEnumerable<Product> Get()
         {
-            return _products;
+            return _productRepository.GetProducts();
         }
 
         [HttpGet("{id}")]
         public Product Get(int id)
         {
-            return _products.FirstOrDefault(x => x.Id == id);
+            return _productRepository.GetProductById(id);
         }
 
         [HttpPost]
-        public Product Post([FromBody] Product product)
+        public void Post([FromBody] Product product)
         {
-            product.Id = _products.Select(i => i.Id).Max() + 1;
-            _products.Add(product);
-
-            return product;
+            _productRepository.AddProduct(product);
         }
 
         [HttpPut("{id}")]
-        public Product Put(int id, [FromBody] Product product)
+        public void Put(int id, [FromBody] Product product)
         {
-            var productToUpdate = _products.FirstOrDefault(p => p.Id == id);
-
-            if (productToUpdate != null)
-            {
-                productToUpdate.Name = product.Name;
-                productToUpdate.Price = product.Price;
-            }
-
-            return productToUpdate;
+            _productRepository.UpdateProduct(id, product);
         }
 
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            var productToDelete = _products.FirstOrDefault(p => p.Id == id);
-
-            if (productToDelete != null)
-                _products.Remove(productToDelete);
+            _productRepository.DeleteProduct(id);
         }
     }
 }
