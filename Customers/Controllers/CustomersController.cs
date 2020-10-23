@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Customers.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace Customers.Controllers
             return _customerRepository.GetCustomers();
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public Customer Get(int id)
         {
             return _customerRepository.GetCustomerById(id);
@@ -38,13 +38,13 @@ namespace Customers.Controllers
             _customerRepository.AddCustomer(customer);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public void Put(int id, [FromBody] Customer customer)
         {
             _customerRepository.UpdateCustomer(id, customer);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public void Delete(int id)
         {
             _customerRepository.DeleteCustomer(id);
