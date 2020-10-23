@@ -14,7 +14,7 @@ namespace CompanyProducts.Controllers
 
         public ProductsController(IProductRepository productRepository)
         {
-            this._productRepository = productRepository;
+            _productRepository = productRepository;
         }
 
         [HttpGet]

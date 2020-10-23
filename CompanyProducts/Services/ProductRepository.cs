@@ -14,9 +14,9 @@ namespace CompanyProducts.Services
         {
             _products = new List<Product>
             {
-                new Product() { Id = 1, Name = "Super", Price = 100 },
-                new Product() { Id = 2, Name = "Fancy", Price = 90 },
-                new Product() { Id = 3, Name = "Clancy", Price = 50 }
+                new Product { ProductId = 1, Name = "Super", Price = 100 },
+                new Product { ProductId = 2, Name = "Fancy", Price = 90 },
+                new Product { ProductId = 3, Name = "Clancy", Price = 50 }
             };
         }
 
@@ -27,18 +27,18 @@ namespace CompanyProducts.Services
 
         public Product GetProductById(int id)
         {
-            return _products.FirstOrDefault(p => p.Id == id);
+            return _products.FirstOrDefault(p => p.ProductId == id);
         }
 
         public void AddProduct(Product product)
         {
-            product.Id = _products.Select(p => p.Id).Max() + 1;
+            product.ProductId = _products.Select(p => p.ProductId).Max() + 1;
             _products.Add(product);
         }
 
         public void UpdateProduct(int id, Product product)
         {
-            var productToUpdate = _products.FirstOrDefault(p => p.Id == id);
+            var productToUpdate = _products.FirstOrDefault(p => p.ProductId == id);
 
             if (productToUpdate != null)
             {
@@ -49,7 +49,7 @@ namespace CompanyProducts.Services
 
         public void DeleteProduct(int id)
         {
-            var productToDelete = _products.FirstOrDefault(p => p.Id == id);
+            var productToDelete = _products.FirstOrDefault(p => p.ProductId == id);
 
             if (productToDelete != null)
                 _products.Remove(productToDelete);
