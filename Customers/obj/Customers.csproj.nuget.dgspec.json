@@ -27,7 +27,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://www.myget.org/F/volotea-nuget/auth/1cad1899-d856-44fe-86e9-ccfdaa9f7f11/api/v2": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {

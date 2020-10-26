@@ -14,9 +14,9 @@ namespace Customers.Services
         {
             _customers = new List<Customer>
             {
-                new Customer { CustomerId = 1, FirstName = "John", LastName = "Kowalyskey", Age = 59 },
+                new Customer { CustomerId = 1, FirstName = "John", LastName = "Kowalskey", Age = 59 },
                 new Customer { CustomerId = 2, FirstName = "Grażyna", LastName = "Nowak", Age = 21 },
-                new Customer { CustomerId = 1, FirstName = "Janusz", LastName = "Andruszkiewicz", Age = 32 }
+                new Customer { CustomerId = 3, FirstName = "Janusz", LastName = "Andruszkiewicz", Age = 32 }
             };
         }
 
