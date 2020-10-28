@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
 using Basket.Models;
 using Basket.Services;
@@ -12,15 +12,17 @@ namespace Basket.Controllers
     [Route("[controller]")]
     public class BasketController : ControllerBase
     {
-        private static IBasketRepository _basket;
-        private readonly ProductDetailsRepository _productDetailsRepository;
-        private readonly CustomerDetailsRepository _customerDetailsRepository;
+        private readonly IBasketRepository _basket;
+        private readonly IProductDetailsRepository _productDetailsRepository;
+        private readonly ICustomerDetailsRepository _customerDetailsRepository;
 
-        public BasketController()
+        public BasketController(IProductDetailsRepository productDetailsRepository,
+                                ICustomerDetailsRepository customerDetailsRepository,
+                                IBasketRepository basket)
         {
-            _basket = new BasketRepository();
-            _productDetailsRepository = new ProductDetailsRepository(new ApiHelper(new HttpClient()));
-            _customerDetailsRepository = new CustomerDetailsRepository(new ApiHelper(new HttpClient()));
+            _basket = basket;
+            _productDetailsRepository = productDetailsRepository;
+            _customerDetailsRepository = customerDetailsRepository;
         }
 
         [HttpPost]
@@ -31,27 +33,58 @@ namespace Basket.Controllers
             {
                 currentBasket = new BasketWithGoods
                 {
-                    CustomerId = customerId
+                    CustomerId = customerId,
+                    ProductIds = new List<int>(productId)
                 };
                 _basket.AddToBasket(currentBasket);
             }
+            else
+            {
+                currentBasket.Quantity = productId;
+                //add number of elements to the list
+            }
+            //productId is not added to the list of all prods!
             currentBasket.ProductIds.Add(productId);
 
         }
 
         [HttpGet]
-        public async Task<List<Product>> GetBasket(int customerId)
+        public async Task<BasketResponse> GetBasket(int customerId)
         {
             var currentBasket = _basket.GetBasket(customerId);
-            var customerInfo = _customerDetailsRepository.GetCustomer(customerId);
-            List<Product> products = new List<Product>();
+
+            BasketResponse basketResponse = new BasketResponse();
+
+            var customerInfo = await _customerDetailsRepository.GetCustomer(customerId);
+
+            List<Task<Product>> products = new List<Task<Product>>();
             foreach (var productId in currentBasket.ProductIds)
             {
-                var productDetails = await _productDetailsRepository.GetProduct(productId);
+                var productDetails = _productDetailsRepository.GetProduct(productId);
                 products.Add(productDetails);
             }
+            await Task.WhenAll(products);
 
-            return products;
+            basketResponse.Product = products.Select(p => p.Result).ToList();
+            basketResponse.Customer = customerInfo;
+            return basketResponse;
+        }
+
+        [HttpDelete]
+        public StatusCodeResult RemoveFromBasket(int customerId, int productId)
+        {
+            var currentBasket = _basket.GetBasket(customerId);
+            if (currentBasket != null)
+            {
+                var productToDelete = currentBasket.ProductIds.FirstOrDefault(p => p == productId);
+                var isDeleted = currentBasket.ProductIds.Remove(productToDelete);
+
+                if (isDeleted)
+                {
+                    return Ok();
+                }
+            }
+            return NotFound();
         }
     }
 }

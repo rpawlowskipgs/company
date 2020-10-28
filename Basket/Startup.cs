@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Basket.Configuration;
 using Basket.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,14 @@ namespace Basket
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddTransient<IBasketRepository, BasketRepository>();
+            services.AddSingleton<IBasketRepository, BasketRepository>();
+            services.AddSingleton<ApiHelper>();
+            services.AddTransient<ICustomerDetailsRepository, CustomerDetailsRepository>();
+            services.AddTransient<IProductDetailsRepository, ProductDetailsRepository>();
+            services.AddMvc();
+            services.AddOptions();
+            services.Configure<ProductConfiguration>(Configuration.GetSection("ProductsSettings"));
+            services.Configure<CustomerConfiguration>(Configuration.GetSection("CustomerSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

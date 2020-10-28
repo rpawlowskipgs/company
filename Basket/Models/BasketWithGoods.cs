@@ -9,5 +9,7 @@ namespace Basket.Models
         public int CustomerId { get; set; }
 
         public List<int> ProductIds { get; set; } = new List<int>();
+
+        public int Quantity { get; set; }
     }
 }

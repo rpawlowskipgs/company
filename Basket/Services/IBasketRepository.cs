@@ -9,6 +9,7 @@ namespace Basket.Services
     public interface IBasketRepository
     {
         public void AddToBasket(BasketWithGoods basket);
+
         public BasketWithGoods GetBasket(int customerId);
     }
 }

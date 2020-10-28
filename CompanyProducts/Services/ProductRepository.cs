@@ -32,6 +32,8 @@ namespace CompanyProducts.Services
 
         public void AddProduct(Product product)
         {
+            // add lock here and in customers
+
             product.ProductId = _products.Select(p => p.ProductId).Max() + 1;
             _products.Add(product);
         }

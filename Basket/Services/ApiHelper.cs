@@ -8,9 +8,9 @@ namespace Basket.Services
     public class ApiHelper
     {
         private readonly HttpClient httpClient;
-        public ApiHelper(HttpClient httpClient)
+        public ApiHelper()
         {
-            this.httpClient = httpClient;
+            this.httpClient = new HttpClient();
         }
         public async Task<T> Get<T>(Uri uri)
         {
